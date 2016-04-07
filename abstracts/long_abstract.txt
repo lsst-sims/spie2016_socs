@@ -1,0 +1,9 @@
+Simulating the LSST OCS for Conducting Survey Simulations Using the LSST Scheduler
+
+Michael Reuter, Kem Cook, Francisco Delgado, Cathy Petry, Stephen Ridgway.
+
+During the past 10+ years of project definition, the Operations Simulator was used to prototype the LSST Scheduler. Moving towards operations, the Scheduler is being developed as a separate project to interface with the LSST Observatory Control System (OCS). A new Simulator is under concurrent development to adjust to this change of architecture. It consists of the Scheduler and a package that will simulate enough of the OCS interfaces to allow execution of realistic schedules. This new package is called the Simulated OCS (SOCS). 
+
+The SOCS is responsible for collecting control (time, downtime, mode, etc.), configuration (observatory, proposals, etc.) information and environmental conditions (seeing, clouds, etc.) and transmitting the data to the Scheduler.  The Scheduler performs the operations necessary to produce the next target or targets for observation. The SOCS then carries out the observation and returns that observation (visit) back to the Scheduler. The SOCS will also record target, observation, Scheduler telemetry, observatory state and other information into a simulated survey database. 
+
+This paper will detail the construction plan for SOCS and provide information about its package structure and use of the LSST communication middleware platform that is built on top of the Data Distribution Service (DDS) standard.  It will also describe some interesting use cases that the separated architecture allows. The software engineering practices used during the code development process will also be elaborated.

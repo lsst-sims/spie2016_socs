@@ -1,0 +1,8 @@
+Simulating the LSST OCS for Conducting Survey Simulations Using the LSST Scheduler
+
+Michael Reuter, Kem Cook, Francisco Delgado, Cathy Petry, Stephen Ridgway.
+
+The Operations Simulator was used to prototype the LSST Scheduler. Currently, the Scheduler is being developed separately to interface with the LSST Observatory Control System (OCS).  A new Simulator is under concurrent development to adjust to this new architecture.  This requires a package simulating enough of the OCS to allow execution of realistic schedules. This new package is called the Simulated OCS (SOCS). 
+
+In this paper we will detail the SOCS construction plan, package structure, LSST communication middleware platform use, provide some interesting use cases that the separated architecture allows and the software engineering practices used in development.
+
