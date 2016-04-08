@@ -38,11 +38,23 @@ The Operations Simulator was used to prototype the LSST Scheduler. Currently, th
 \section{INTRODUCTION}
 \label{sec:intro}  % \label{} allows reference to this section
 
-The previous 10+ years of the LSST saw the successful development and testing of the Operations Simulator\cite{2014SPIE.9149E..0GD}\cite{2014SPIE.9150E..15D}\cite{2013AAS...22124703S}\cite{2010SPIE.7737E..0ZR}\cite{2010AAS...21540105K}\cite{2009AAS...21346004C}\cite{2007AAS...21113703P}\cite{2006SPIE.6270E..1DD}\cite{2006AAS...209.8604P}\cite{2005AAS...207.2626C}\cite{2004AAS...20510809C}.
+The previous 10+ years of the LSST project saw the successful development and testing of the Operations Simulator (OpSim)\cite{2014SPIE.9149E..0GD}\cite{2014SPIE.9150E..15D}\cite{2013AAS...22124703S}\cite{2010SPIE.7737E..0ZR}\cite{2010AAS...21540105K}\cite{2009AAS...21346004C}\cite{2007AAS...21113703P}\cite{2006SPIE.6270E..1DD}\cite{2006AAS...209.8604P}\cite{2005AAS...207.2626C}\cite{2004AAS...20510809C}. OpSim contained the prototype version of the LSST Scheduler. 
+
+\section{CONSTRUCTION}
+
+\section{DESIGN}
+
+\section{SOFTWARE ENGINEERING}
+	
+\section{USE CASES}
+
+The separation of the Scheduler from the simulation harness allows for efficient development. This means only one code base has to be maintained to serve the separate systems (OCS and SOCS). This separated approach and the use of a standard communication framework allow for some interesting use cases with respect to the SOCS/Scheduler combination. Both cases are predicated off the fact the configuration of the Scheduler that is running the LSST during operations can be injected into a new instance of the Scheduler. The new instance can be driven by SOCS to perform different scenarios. One scenario is advancing the Scheduler through a given time window in order to publish a list of targets that the LSST will visit within the caveates of environmental and instrumental conditions. Another scenario is to take the current Scheduler state and fast forward through the remaining survey to evaluate the efficiency based off the current progress. This mechanism can also be used to evaluate alternate scenarios for the survey, such as new proposals, proposals being finished or alternate configuration parameters.
+
+\section{SUMMARY}
 
 \acknowledgments % equivalent to \section*{ACKNOWLEDGMENTS}       
 
-This unnumbered section is used to identify those who have aided the authors in understanding or accomplishing the work presented and to acknowledge sources of funding.  
+Financial support for LSST comes from the National Science Foundation (NSF) through Cooperative Agreement No. 1258333, the Department of Energy (DOE) Office of Science under Contract No. DE-AC02-76SF00515, and private funding raised by the LSST Corporation. The NSF-funded LSST Project Office for construction was established as an operating center under management of the Association of Universities for Research in Astronomy (AURA).  The DOE-funded effort to build the LSST camera is managed by the SLAC National Accelerator Laboratory (SLAC).    
 
 % References
 \bibliography{SimObsConSysSPIE991183} % bibliography data in report.bib
