@@ -1,0 +1,51 @@
+\documentclass[]{spie}  %>>> use for US letter paper
+%\documentclass[a4paper]{spie}  %>>> use this instead for A4 paper
+%\documentclass[nocompress]{spie}  %>>> to avoid compression of citations
+
+\renewcommand{\baselinestretch}{1.0} % Change to 1.65 for double spacing
+ 
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Simulating the LSST OCS for Conducting Survey Simulations Using the LSST Scheduler}
+
+\author[a]{Michael A. Reuter*}
+\author[b]{Kem H. Cook}
+\author[a]{Francisco Delgado}
+\author[a]{Catherine E. Petry}
+\author[c]{Stephen T. Ridgway}
+\affil[a]{LSST, 950 N Cherry Ave, Tucson, AZ USA}
+\affil[b]{Cook Astronomical Consulting, San Ramone, CA USA}
+\affil[c]{National Optical Astronomy Observatory, 950 N Cherry Ave, Tucson, AZ USA}
+
+%\authorinfo{Further author information: (Send correspondence to M.A.R.)\\M.A.R.: E-mail: mareuter@lsst.org, Telephone: 1 520 318 8204}
+
+% Option to view page numbers
+\pagestyle{empty} % change to \pagestyle{plain} for page numbers   
+\setcounter{page}{301} % Set start page numbering at e.g. 301
+ 
+\begin{document} 
+\maketitle
+
+\begin{abstract}
+The Operations Simulator was used to prototype the LSST Scheduler. Currently, the Scheduler is being developed separately to interface with the LSST Observatory Control System (OCS).  A new Simulator is under concurrent development to adjust to this new architecture.  This requires a package simulating enough of the OCS to allow execution of realistic schedules. This new package is called the Simulated OCS (SOCS). In this paper we will detail the SOCS construction plan, package structure, LSST communication middleware platform use, provide some interesting use cases that the separated architecture allows and the software engineering practices used in development.
+\end{abstract}
+
+% Include a list of keywords after the abstract 
+\keywords{LSST, simulations, observing strategy}
+
+\section{INTRODUCTION}
+\label{sec:intro}  % \label{} allows reference to this section
+
+The previous 10+ years of the LSST saw the successful development and testing of the Operations Simulator\cite{2014SPIE.9149E..0GD}\cite{2014SPIE.9150E..15D}\cite{2013AAS...22124703S}\cite{2010SPIE.7737E..0ZR}\cite{2010AAS...21540105K}\cite{2009AAS...21346004C}\cite{2007AAS...21113703P}\cite{2006SPIE.6270E..1DD}\cite{2006AAS...209.8604P}\cite{2005AAS...207.2626C}\cite{2004AAS...20510809C}.
+
+\acknowledgments % equivalent to \section*{ACKNOWLEDGMENTS}       
+
+This unnumbered section is used to identify those who have aided the authors in understanding or accomplishing the work presented and to acknowledge sources of funding.  
+
+% References
+\bibliography{SimObsConSysSPIE991183} % bibliography data in report.bib
+\bibliographystyle{spiebib} % makes bibtex use spiebib.bst
+
+\end{document} 
