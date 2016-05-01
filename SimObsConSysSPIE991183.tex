@@ -16,10 +16,10 @@
 \author[a]{Catherine E. Petry}
 \author[c]{Stephen T. Ridgway}
 \affil[a]{LSST, 950 N Cherry Ave, Tucson, AZ USA}
-\affil[b]{Cook Astronomical Consulting, San Ramone, CA USA}
+\affil[b]{Cook Astronomical Consulting, San Ramon, CA USA}
 \affil[c]{National Optical Astronomy Observatory, 950 N Cherry Ave, Tucson, AZ USA}
 
-%\authorinfo{Further author information: (Send correspondence to M.A.R.)\\M.A.R.: E-mail: mareuter@lsst.org, Telephone: 1 520 318 8204}
+\authorinfo{Further author information: (Send correspondence to M.A.R.)\\M.A.R.: E-mail: mareuter@lsst.org}
 
 % Option to view page numbers
 \pagestyle{empty} % change to \pagestyle{plain} for page numbers   
@@ -29,7 +29,7 @@
 \maketitle
 
 \begin{abstract}
-The Operations Simulator was used to prototype the LSST Scheduler. Currently, the Scheduler is being developed separately to interface with the LSST Observatory Control System (OCS).  A new Simulator is under concurrent development to adjust to this new architecture.  This requires a package simulating enough of the OCS to allow execution of realistic schedules. This new package is called the Simulated OCS (SOCS). In this paper we will detail the SOCS construction plan, package structure, LSST communication middleware platform use, provide some interesting use cases that the separated architecture allows and the software engineering practices used in development.
+The Operations Simulator was used to prototype the LSST Scheduler. Currently, the Scheduler is being developed separately to interface with the LSST Observatory Control System (OCS). A new Simulator is under concurrent development to adjust to this new architecture. This requires a package simulating enough of the OCS to allow execution of realistic schedules. This new package is called the Simulated OCS (SOCS). In this paper we will detail the SOCS construction plan, package structure, LSST communication middleware platform use, provide some interesting use cases that the separated architecture allows and the software engineering practices used in development.
 \end{abstract}
 
 % Include a list of keywords after the abstract 
@@ -38,9 +38,11 @@ The Operations Simulator was used to prototype the LSST Scheduler. Currently, th
 \section{INTRODUCTION}
 \label{sec:intro}  % \label{} allows reference to this section
 
-In both research and development phase of the LSST project prior to the construction award in August 2014 and the subsequent years afterwards saw the successful development and testing of the Operations Simulator (OpSim) \cite{2014SPIE.9149E..0GD}\cite{2014SPIE.9150E..15D}\cite{2013AAS...22124703S}\cite{2010SPIE.7737E..0ZR}\cite{2010AAS...21540105K}\cite{2009AAS...21346004C}\cite{2007AAS...21113703P}\cite{2006SPIE.6270E..1DD}\cite{2006AAS...209.8604P}\cite{2005AAS...207.2626C}\cite{2004AAS...20510809C} . OpSim contains the prototype version of the LSST Scheduler and this has been tuned to produce the current LSST baseline survey and  some alternate survey strategies\cite{Cook_SPIE2016}. When LSST begins operations, it will require the Scheduler to perform the duties of determining the next targets to observe. The current state of OpSim has the Scheduler entwined within the code base. The LSST project decided to separate the Scheduler\cite{Delgado_SPIE2016} into its own code base so that an effective deliverable can be provided. The Scheduler is required to interface with the LSST's Observatory Control System (OCS)\cite{Daly_SPIE2016} via the Data Distribution Service (DDS) which is behind the LSST communication middleware\cite{Mills_SPIE2016} project. DDS is a publish/subscribe system in common use for communication between components of complex systems. 
+In both research and development phase of the LSST project prior to the construction award in August 2014 and the subsequent years afterwards saw the successful development and testing of the Operations Simulator (OpSim) \cite{2014SPIE.9149E..0GD}\cite{2014SPIE.9150E..15D}\cite{2013AAS...22124703S}\cite{2010SPIE.7737E..0ZR}\cite{2010AAS...21540105K}\cite{2009AAS...21346004C}\cite{2007AAS...21113703P}\cite{2006SPIE.6270E..1DD}\cite{2006AAS...209.8604P}\cite{2005AAS...207.2626C}\cite{2004AAS...20510809C} . OpSim is a software application that contains an environment simulation using data from the actual LSST site, a fully detailed kinematic telescope and camera model, configuration parameters for controlling the science driven requirements, and the prototype version of the LSST Scheduler. OpSim has been tuned to produce the current LSST baseline survey and some alternate survey strategies\cite{Cook_SPIE2016}. 
 
-In order to continue running simulations with the refactored Scheduler, a new harness is being created that utilizes the same DDS infrastructure to communicate with the Scheduler. This new project is called the Simulated Observatory Control System (SOCS). SOCS is not a high fidelity simulation of the entire OCS, but just enough of it to get the Scheduler to complete an entire survey. The combination of SOCS and the Scheduler is still collectively called the OpSim version 4 (OpSim4) whereas the older Operations Simulator is now referred to as OpSim version 3 (OpSim3).
+While OpSim has been successful at producing survey strategy scenarios, the Scheduler is entwined within the code base. When LSST begins operations, it will require the Scheduler to perform the duties of determining the next targets to observe while interfacing with the LSST's Observatory Control System (OCS)\cite{Daly_SPIE2016}. The Scheduler will use the LSST communication middleware\cite{Mills_SPIE2016} project which is layer upon the Data Distribution Service (DDS) architecture. DDS is a publish/subscribe system in common use for communication between components of complex systems. 
+
+With the requirements stated above, the project decided to separate the Scheduler\cite{Delgado_SPIE2016} into its own code base so that an effective deliverable can be provided.  In order to continue running simulations with the refactored Scheduler, a new harness is being created that utilizes the same DDS infrastructure to communicate with the Scheduler. This new project is called the Simulated Observatory Control System (SOCS). SOCS is not a high fidelity simulation of the entire OCS, but just enough of it to get the Scheduler to complete an entire survey. The combination of SOCS and the Scheduler is still collectively called the OpSim version 4 (OpSim4) whereas the older Operations Simulator is now referred to as OpSim version 3 (OpSim3). The schematic representations for both versions are shown in Figure~\ref{fig:opsim}.
 
 \begin{figure} [ht]
   	\begin{center}
@@ -57,9 +59,9 @@ In order to continue running simulations with the refactored Scheduler, a new ha
 \section{CONSTRUCTION}
 \label{sec:construction}
 
-Since SOCS and the Scheduler have intertwined functionality, the developed construction plans are tightly coupled. 
+Since SOCS and the Scheduler have interdependent functionality, the developed construction plans are tightly coupled. 
 
-\section{DESIGN}
+\section{CONSTRUCTION AND DESIGN}
 
 The design of SOCS inherits from lessons learned in building OpSim3. Among those is a desire for a more modular approach to the software with some parts of the Application Programming Interface (API) available for use outside the main steering program. Figure~\ref{fig:comparch} shows the top-level component diagram. It contains both module definitions as well as information flow between components and between SOCS and the Scheduler.
 
@@ -76,7 +78,7 @@ This diagram shows the block level components for the SOCS design as well as the
 
 \subsection{Modules}
 
-We will now look in more detail as the presented modules.
+The code will be divided into modules with each one characterized by a particular set of behaviors and responsibilities for the system. Descriptions of the modules are given in the following sections.
 
 \subsubsection{Simulation Kernel}
 
@@ -96,15 +98,15 @@ The Environmental Model will contain classes that handle digesting and distribut
 
 \subsubsection{Quality Simulator}
 
-While this module not reached the development stage of the construction plan, it also has a known set of functionality. The module will contain classes that mimic some the behavior of the Data Management Level 1 products. The main focus is the image feedback on things like seeing, transparency and other quality metrics. This system will be engineered to provide some mechanism for occasionally making images that do not meet the constraints of a good visit. This information will be fed back to the Scheduler and the winning proposals for that visit will need to determine how the quality factors effect their completeness requirements.
+While this module has not reached the development stage of the construction plan, it also has a known set of functionality. The module will contain classes that mimic some the behavior of the Data Management Level 1 products. The main focus is the image feedback on things like seeing, transparency and other quality metrics. This system will be engineered to provide some mechanism for occasionally making images that do not meet the constraints of a good visit. This information will be fed back to the Scheduler and the winning proposals for that visit will need to determine how the quality factors effect their completeness requirements.
 
 \subsubsection{SAL}
 
-While this module is not on the diagram, it is a useful nonetherless as it helps handle the interaction between the other classes and the LSST middleware's Software Abstraction Layer (SAL). The class, called SalManage, allows for the ease creation and setting of publish and subscribe topics that are the backbone of the communication between SOCS and the Scheduler. The class also provides an easy mechanism for performing the actual publishing of topics and receiving the subscribed topics.
+While this module is not on the diagram, it is a useful nonetheless as it helps handle the interaction between other classes and the LSST middleware's Software Abstraction Layer (SAL). The class, called SalManager, allows for the ease creation and setting of publish and subscribe topics that are the backbone of the communication between SOCS and the Scheduler. The class also provides an easy mechanism for performing the actual publishing of topics and receiving the subscribed topics.
 
 \subsubsection{Configuration}
 
-This is another module not on the diagram, but one that interfaces with configuration described in Section~\ref{sec:code-config}. The classes here are designed to 
+This is another module not on the diagram, but one that keeps  the baseline LSST survey configuration. It uses a configuration system that is available from the LSST Data Management software stack\cite{2015arXiv151207914J}. The classes contain the appropriate configuration parameters for the baseline survey and the configuration system provides a mechanism to override those values without changing the code. There are also classes which interface the configuration parameters to the configuration DDS topics that need to be passed to the Scheduler.
 
 \subsection{Information Flow}
 
@@ -113,7 +115,6 @@ We will now describe the content of the information flow for SOCS.
 \subsubsection{Configuration}
 \label{sec:code-config}
 
-The baseline LSST survey configuration is contained within the SOCS code base. It uses a configuration system that is available from the LSST Data Management software stack (ref?). 
 
 \begin{figure} [ht]
 	\begin{center}
