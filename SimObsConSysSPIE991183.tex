@@ -56,12 +56,25 @@ With the requirements stated above, the project decided to separate the Schedule
   		The left figure schematically shows the operational bounding box for OpSim version 3. This clearly indicates the buried nature of the Scheduler within the confines of OpSim. The right figure schematically shows the operational bounding box for OpSim version 4. This shows the newly separated nature of the two components which allow for development and usage flexibility.}
 \end{figure} 
 
+\begin{figure} [ht]
+	\begin{center}
+		\begin{tabular}{c}
+			\includegraphics[height=5cm]{CommFlow.png}
+		\end{tabular}
+	\end{center}
+	\caption[example]
+	{ \label{fig:commflow} 
+		This diagram shows the DDS communication pathways between the SOCS and Scheduler systems.}
+\end{figure}
+
+Figure~\ref*{fig:commflow} is an exact replica of a diagram showing the interaction of the Scheduler and the OCS with SOCS simulating OCS functions. The job of SOCS is to provide all of the needed inputs to the Scheduler shown in this diagram. Central to this diagram is the communications middleware via which information flows between SOCS and the Scheduler. Key to the design of SOCS is the ability to simulate a survey either deterministically or with stochastic variation in a variety of outputs. This is needed to understand the behavior of simulated surveys when the Scheduler is not provided completely accurate environmental data due to rapid variation in the environment, and also when the Scheduler’s telescope model is not a completely accurate model of the real telescope.
+
 \section{CONSTRUCTION}
 \label{sec:construction}
 
-Since SOCS and the Scheduler have interdependent functionality, the developed construction plans are tightly coupled. 
+Since SOCS and the Scheduler have interdependent functionality, the developed construction plans are tightly coupled. The schedules for both products are aligned so that software releases appear simultaneously. 
 
-\section{CONSTRUCTION AND DESIGN}
+\section{DESIGN}
 
 The design of SOCS inherits from lessons learned in building OpSim3. Among those is a desire for a more modular approach to the software with some parts of the Application Programming Interface (API) available for use outside the main steering program. Figure~\ref{fig:comparch} shows the top-level component diagram. It contains both module definitions as well as information flow between components and between SOCS and the Scheduler.
 
@@ -78,7 +91,7 @@ This diagram shows the block level components for the SOCS design as well as the
 
 \subsection{Modules}
 
-The code will be divided into modules with each one characterized by a particular set of behaviors and responsibilities for the system. Descriptions of the modules are given in the following sections.
+The code is divided into modules with each one characterized by a particular set of behaviors and responsibilities for the system. Descriptions of the modules are given in the following sections.
 
 \subsubsection{Simulation Kernel}
 
@@ -102,7 +115,7 @@ While this module has not reached the development stage of the construction plan
 
 \subsubsection{SAL}
 
-While this module is not on the diagram, it is a useful nonetheless as it helps handle the interaction between other classes and the LSST middleware's Software Abstraction Layer (SAL). The class, called SalManager, allows for the ease creation and setting of publish and subscribe topics that are the backbone of the communication between SOCS and the Scheduler. The class also provides an easy mechanism for performing the actual publishing of topics and receiving the subscribed topics.
+While this module is not on the diagram, it is useful nonetheless as it helps handle the interaction between other classes and the LSST middleware's Software Abstraction Layer (SAL). The class, called SalManager, allows for the ease creation and setting of publish and subscribe topics that are the backbone of the communication between SOCS and the Scheduler. The class also provides an easy mechanism for performing the actual publishing of topics and receiving the subscribed topics.
 
 \subsubsection{Configuration}
 
@@ -110,36 +123,30 @@ This is another module not on the diagram, but one that keeps  the baseline LSST
 
 \subsection{Information Flow}
 
-We will now describe the content of the information flow for SOCS.
+We will now describe the content of the information flow for SOCS. Each external arrow represents one or more DDS topics. For reference the Observatory and Environmental arrows in Figure~\ref{fig:comparch} are bundled together as the Telemetry arrow from Figure~\ref{fig:commflow}.
 
-\subsubsection{Configuration}
-\label{sec:code-config}
+\subsubsection{Control}
 
+The main topic for this is the exchange of a timestamp during the simulation. This timestamp. Multiple topics are used to handle configuration of the various Scheduler components.
 
-\begin{figure} [ht]
-	\begin{center}
-		\begin{tabular}{c}
-			\includegraphics[height=5cm]{CommFlow.png}
-		\end{tabular}
-	\end{center}
-	\caption[example]
-	{ \label{fig:commflow} 
-		This diagram shows the DDS communication pathways between the SOCS and Scheduler systems.}
-\end{figure}
+\subsubsection{Environment}
 
-Figure~\ref*{fig:commflow} is an exact replica of a diagram showing the interaction of the Scheduler and the OCS with SOCS simulating OCS functions. The job of SOCS is to provide all of the needed inputs to the Scheduler shown in this diagram. Central to this diagram is the communications middleware, which currently is DDS. The details of this interface are described in the Scheduler interface document. Key to the design of SOCS is the ability to simulate a survey either deterministically or with stochastic variation in a variety of outputs. This is needed to understand the behavior of simulated surveys when the Scheduler is not provided completely accurate environmental data due to rapid variation in the environment, and also when the Scheduler’s telescope model is not a completely accurate model of the real telescope.
+\subsubsection{Observatory}
+
+This is a single topic that is exchanged prior to the upcoming visit. It contains the current pointing location, telescope position, dome position and camera filter state information.
+
 
 \section{SOFTWARE ENGINEERING}
 
-OpSim3 had a document detailing all of the functional and performance requirements for the developed system which included those for the Scheduler. The factorization of OpSim3 into the SOCS and Scheduler components necessitated a factorization of the requirements document into one for each resulting system. The SOCS requirements document was adjusted to account for the new role as the harness for driving the Scheduler and placed under LSST project level change control.
+OpSim3 had a document detailing all of the functional and performance requirements for the developed system which included those for the Scheduler. The refactoring of OpSim3 into the SOCS and Scheduler components necessitated a refactoring of the requirements document into one for each resulting system. The SOCS requirements document was adjusted to account for the new role as the harness for driving the Scheduler and placed under LSST project level change control.
 
-A development plan for SOCS was created containing incremental releases, with a specific set of capabilities and validation activities for each one. This plan is captured in JIRA\cite{JIRA} release epics and described at a high level in Primavera PMCS. The plan is coordinated with the release timeline of the Scheduler due to their heavy interdependence.
+A development plan for SOCS was created containing incremental releases, with a specific set of capabilities and validation activities for each one. This plan is captured in JIRA\cite{JIRA} release epics and described at a high level in Primavera\cite{Primavera} PMCS\cite{PMCS}. The plan is coordinated with the release timeline of the Scheduler due to their heavy interdependence.
 
-The detailed construction plan is also described in JIRA epics relating to each release epic, keeping track of individual tasks that mark the way to each release. Tracking the development process uses the LSST variant of Agile software development\cite{Kantor_SPIE2016}. The JIRA plan, releases, milestones and tasks are used periodically to report back to PMCS and to compute EVM, and organize the work of the development team.
+The detailed construction plan is also described in JIRA epics relating to each release epic, keeping track of individual tasks that mark the way to each release. Tracking the development process uses the LSST variant of Agile software development\cite{Kantor_SPIE2016}. The JIRA plan, releases, milestones and tasks are used periodically to report back to PMCS, to compute Earned Value for the project and organize the work of the development team.
 
-The SOCS code is kept in a Github\cite{GitHub} git repository, following coding standards from Data Management and Systems Engineering Simulations about templates, interfaces, coding and unit tests. The SOCS code follows the basic tenants of the Test Driven Design philosophy of software development. TDD requires unit tests to be run during the implementation process at a fairly high frequency to uncover issues quickly. The baseline science survey configuration is also kept with the SOCS GitHub repository. 
+The SOCS code is kept in a Github\cite{GitHub} git repository, following coding standards from Data Management and Systems Engineering Simulations about templates, interfaces, coding and unit tests. The SOCS code follows the basic tenants of the Test Driven Design\cite{Beck2002}\cite{Astels2003} (TDD) philosophy of software development. TDD requires unit tests to be run during the implementation process at a fairly high frequency to uncover issues quickly. The baseline science survey configuration is also kept within the SOCS GitHub repository. 
 
-More importantly, each SOCS release is integrated and tested with the LSST Scheduler and the combined efforts from both the Telescope and Site and Systems Engineering Simulations teams. The capabilities of SOCS to drive the Scheduler for implementing the LSST survey are validated with specialized tools (MAF) and the participation of the science collaborations.
+More importantly, each SOCS release is integrated and tested with the LSST Scheduler and the combined efforts from both the Telescope and Site and Systems Engineering Simulations teams. The capabilities of SOCS to drive the Scheduler for implementing the LSST survey are validated with specialized tools, such as the Metrics Analysis Framework\cite{2014SPIE.9149E..0BJ} and the participation of the science collaborations.
 
 \section{USE CASES}
 
