@@ -10,7 +10,7 @@
 
 \title{Simulating the LSST OCS for Conducting Survey Simulations Using the LSST Scheduler}
 
-\author[a]{Michael A. Reuter*}
+\author[a]{Michael A. Reuter}
 \author[b]{Kem H. Cook}
 \author[a]{Francisco Delgado}
 \author[a]{Catherine E. Petry}
@@ -72,7 +72,23 @@ Figure~\ref*{fig:commflow} is an exact replica of a diagram showing the interact
 \section{CONSTRUCTION}
 \label{sec:construction}
 
-Since SOCS and the Scheduler have interdependent functionality, the developed construction plans are tightly coupled. The schedules for both products are aligned so that software releases appear simultaneously. 
+Since SOCS and the Scheduler have interdependent functionality, the developed construction plans are tightly coupled. The schedules for both products are aligned so that software releases appear simultaneously. The first goal in the construction process was to create a version that replaces all of the functionality offered by OpSim3 with a few improvements added. The construction will proceed with adding more features to the system until the Scheduler is delivered to the project completing a major milestone. There will be continued development as a few more features of the system have been requested. 
+
+The following description provides the proposed release versions and the functionality required from that version. The version 1.0 release represents the OpSim3 replacement milestone and is slated for the fall of 2016. The version 1.5 release represents the milestone of the Scheduler delivery to the project.
+
+\begin{description}
+	\item[v0.2] SOCS interface with DDS, Implement basic configuration system, Implement basic survey database system, Simulation kernel and time handling, sequencer with target handling, Inherit from Scheduler observatory model, Interface with Scheduler exchanging fixed list of targets
+	\item[v0.3] Implement slewing and visit behavior for observatory model, Implement observing behavior in sequencer, Integrate storage of target and observation information in survey database, Track slew information in survey database, Implement configuration for area distribution proposals
+	\item[v1.0] Implement configuration for time-dependent proposals, Configure Scheduler via DDS topics, Implement environmental model, Incorporate weather and seeing data, Implement downtime information, Implement filter swaps during new moon
+	\item[v1.1] Implement configuration and support development of look-ahead for area distribution proposals, Implement non-deterministic downtime, Implement non-deterministic weather
+	\item[v1.2] Implement configuration and support development of look-ahead for time-dependent proposals
+	\item[v1.3] Evaluate and implement performance enhancements
+	\item[v1.4] Implement warm start process for Scheduler, Implement image quality feedback simulation, Implement degraded operations mode simulation
+	\item[v1.5] Implement and support dithering in Scheduler
+	\item[v2.0] Implement publication of future targets scheduler
+	\item[v2.1] Implement weather forecast data
+	\item[v2.2] Implement configuration for alternate Scheduler optimization algorithms
+\end{description}
 
 \section{DESIGN}
 
@@ -127,14 +143,39 @@ We will now describe the content of the information flow for SOCS. Each external
 
 \subsubsection{Control}
 
-The main topic for this is the exchange of a timestamp during the simulation. This timestamp. Multiple topics are used to handle configuration of the various Scheduler components.
+This arrow consists of many different topics. The main one is the exchange of a timestamp during the simulation. This timestamp represents the calendar time prior to the upcoming visit. Multiple topics are used to handle configuration of the various Scheduler components. Other topics include downtime notifications, possible degraded modes for the observatory
+
+\subsubsection{Visits}
+
+This arrow consists of an observation topic from the visit of the requested Scheduler field. This topic contains information like the time visit started, actual number and duration of exposures, total time of visit, actual field position observed (RA, Dec), filter used, sky brightness, clouds (or transparency), field separation from moon etc.
 
 \subsubsection{Environment}
 
+This contains multiple topics for exchange of environmental conditions. Clouds (or transparency), seeing, weather data (temperature, pressure, wind speed and direction, etc.) and weather forecasting data are provided. Topics like clouds and seeing are provided as a grid of information for the whole sky. The grid resolution is determined by the Scheduler requirements.
+
 \subsubsection{Observatory}
 
-This is a single topic that is exchanged prior to the upcoming visit. It contains the current pointing location, telescope position, dome position and camera filter state information.
+This arrow contains a single topic that is exchanged prior to the upcoming visit. It contains the current pointing location, tracking state, telescope position, dome position, rotator position and camera filter state information.
 
+\subsubsection{Image Quality}
+
+This arrow contains a topic with image quality parameters from a past visit. It will contain an overall image quality factor and calculated seeing and transparency for the visit field.
+
+\subsubsection{History}
+
+This arrow's main use is for setting up a new instance of the Scheduler based on the current running Scheduler. It contains a stream of observation topic messages that as read from a survey database. The contents of the topic messages are the same as the one from the Visit arrow.
+
+\subsubsection{Config}
+
+This arrow represents any configuration coming from the Scheduler that outside systems, like SOCS or the OCS, might require. Currently, this is limited to the configuration of the LSST observation fields. For SOCS, the LSST field information is used to link against the target field request from the Scheduler.
+
+\subsubsection{Targets}
+
+This represents the stream targets requested by the Scheduler after considering all of the environmental, observatory and science requirements. The target topic contains information like the requested field, field position (RA, Dec), filter, number and duration of exposures. 
+
+\subsubsection{Sched Telem}
+
+This arrow represents a topic containing all of the relevant information the Scheduler used to make its decision about which target to request for observation. It consists of information like sky brightness, clouds, transparency, seeing, target distance from moon, rank from science drivers, interested science drivers, etc. 
 
 \section{SOFTWARE ENGINEERING}
 
@@ -144,13 +185,13 @@ A development plan for SOCS was created containing incremental releases, with a 
 
 The detailed construction plan is also described in JIRA epics relating to each release epic, keeping track of individual tasks that mark the way to each release. Tracking the development process uses the LSST variant of Agile software development\cite{Kantor_SPIE2016}. The JIRA plan, releases, milestones and tasks are used periodically to report back to PMCS, to compute Earned Value for the project and organize the work of the development team.
 
-The SOCS code is kept in a Github\cite{GitHub} git repository, following coding standards from Data Management and Systems Engineering Simulations about templates, interfaces, coding and unit tests. The SOCS code follows the basic tenants of the Test Driven Design\cite{Beck2002}\cite{Astels2003} (TDD) philosophy of software development. TDD requires unit tests to be run during the implementation process at a fairly high frequency to uncover issues quickly. The baseline science survey configuration is also kept within the SOCS GitHub repository. 
+The SOCS code is kept in a GitHub\cite{GitHub} git repository, following coding standards from Data Management and Systems Engineering Simulations about templates, interfaces, coding and unit tests. The SOCS code follows the basic tenants of the Test Driven Design\cite{Beck2002}\cite{Astels2003} (TDD) philosophy of software development. TDD requires unit tests to be run during the implementation process at a fairly high frequency to uncover issues quickly. The baseline science survey configuration is also kept within the SOCS GitHub repository. 
 
 More importantly, each SOCS release is integrated and tested with the LSST Scheduler and the combined efforts from both the Telescope and Site and Systems Engineering Simulations teams. The capabilities of SOCS to drive the Scheduler for implementing the LSST survey are validated with specialized tools, such as the Metrics Analysis Framework\cite{2014SPIE.9149E..0BJ} and the participation of the science collaborations.
 
 \section{USE CASES}
 
-The separation of the Scheduler from the simulation harness allows for efficient development. This means only one code base has to be maintained to serve the separate systems (OCS and SOCS). This separated approach and the use of a standard communication framework allow for some interesting use cases with respect to the SOCS/Scheduler combination. The main use case, the ability to run a full LSST survey, is oth cases are predicated off the fact the configuration of the Scheduler that is running the LSST during operations can be injected into a new instance of the Scheduler. The new instance can be driven by SOCS to perform different scenarios while leaving the operating Scheduler unaffected. One scenario is advancing the Scheduler through a given time window in order to publish a list of targets that the LSST will visit within the caveats of environmental and instrumental conditions. Another scenario is to take the current Scheduler state and fast forward through the remaining survey to evaluate the efficiency based off the current progress. This mechanism can also be used to evaluate alternate scenarios for the survey, such as new proposals, proposals being finished or alternate configuration parameters.
+The separation of the Scheduler from the simulation harness allows for efficient development. This means only one code base has to be maintained to serve the separate input systems (OCS and SOCS). This separated approach and the use of a standard communication framework allow for some interesting use cases with respect to the SOCS/Scheduler combination. The main use case, the ability to run a full LSST survey, is not influence by the system separation. The other cases are predicated off the fact the configuration of the Scheduler that is running the LSST during operations can be injected into a new instance of the Scheduler. The new instance can be driven by SOCS to perform different scenarios while leaving the operating Scheduler unaffected. One scenario is advancing the Scheduler through a given time window in order to publish a list of targets that the LSST will visit within the caveats of environmental and instrumental conditions. Another scenario is to take the current Scheduler state and fast forward through the remaining survey to evaluate the efficiency based off the current progress. This mechanism can also be used to evaluate alternate scenarios for the survey, such as new proposals, proposals being finished or alternate configuration parameters.
 
 \section{SUMMARY}
 
