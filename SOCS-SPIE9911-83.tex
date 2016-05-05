@@ -38,7 +38,7 @@ The Operations Simulator was used to prototype the LSST Scheduler. Currently, th
 \section{INTRODUCTION}
 \label{sec:intro}  % \label{} allows reference to this section
 
-In both the research and development phase of the LSST project prior to the construction award in August 2014 and the subsequent years afterwards saw the successful development and testing of the Operations Simulator (OpSim) \cite{2014SPIE.9149E..0GD}\cite{2014SPIE.9150E..15D}\cite{2013AAS...22124703S}\cite{2010SPIE.7737E..0ZR}\cite{2010AAS...21540105K}\cite{2009AAS...21346004C}\cite{2007AAS...21113703P}\cite{2006SPIE.6270E..1DD}\cite{2006AAS...209.8604P}\cite{2005AAS...207.2626C}\cite{2004AAS...20510809C} . OpSim is a software application for simulating surveys for LSST. It contains an environment simulation using data from the actual LSST site, a fully detailed kinematic telescope and camera model, configuration parameters for controlling the science driven requirements, and the prototype version of the LSST Scheduler. OpSim has been tuned to produce the current LSST baseline survey and some alternate survey strategies\cite{Cook_SPIE2016}. 
+Both the research and development phase of the LSST project prior to the construction award in August 2014 and the subsequent years afterwards saw the successful development and testing of the Operations Simulator (OpSim) \cite{2014SPIE.9149E..0GD}\cite{2014SPIE.9150E..15D}\cite{2013AAS...22124703S}\cite{2010SPIE.7737E..0ZR}\cite{2010AAS...21540105K}\cite{2009AAS...21346004C}\cite{2007AAS...21113703P}\cite{2006SPIE.6270E..1DD}\cite{2006AAS...209.8604P}\cite{2005AAS...207.2626C}\cite{2004AAS...20510809C} . OpSim is a software application for simulating surveys for LSST. It contains an environment simulation using data from the actual LSST site, a fully detailed kinematic telescope and camera model, configuration parameters for controlling the science driven requirements, and the prototype version of the LSST Scheduler. OpSim has been tuned to produce the current LSST baseline survey and some alternate survey strategies\cite{Cook_SPIE2016}. 
 
 While OpSim has been successful at producing survey strategy scenarios, the Scheduler is entwined within the code base. When LSST begins operations, it will require the Scheduler to perform the duties of determining the next targets to observe while interfacing with LSST's Observatory Control System (OCS)\cite{Daly_SPIE2016}. The Scheduler will use the LSST communication middleware\cite{Mills_SPIE2016} project which is a layer upon the Data Distribution Service (DDS) architecture. DDS is a publish/subscribe system in common use for communication between components of complex systems. 
 
@@ -53,7 +53,7 @@ With the requirements stated above, the project decided to separate the Schedule
   	\end{center}
   	\caption[What is this?] 
   	{ \label{fig:opsim} 
-  		The left figure schematically shows the operational bounding box for OpSim version 3. This clearly indicates the buried nature of the Scheduler within the confines of OpSim. The right figure schematically shows the operational bounding box for OpSim version 4. This shows the newly separated nature of the two components which allow for development and usage flexibility.}
+  		The left figure schematically shows the operational bounding box for OpSim version 3. This clearly indicates the buried nature of the Scheduler within the confines of OpSim. The right figure schematically shows the operational bounding box for OpSim version 4. This shows the newly separated nature of the two components which allows for development and usage flexibility.}
 \end{figure} 
 
 \begin{figure} [ht]
@@ -67,14 +67,14 @@ With the requirements stated above, the project decided to separate the Schedule
 		This diagram shows the DDS communication pathways between the SOCS and Scheduler systems.}
 \end{figure}
 
-Figure~\ref*{fig:commflow} is an exact replica of a diagram showing the interaction of the Scheduler and the OCS with SOCS simulating OCS functions. The job of SOCS is to provide all of the needed inputs to the Scheduler shown in this diagram. Central to this is the communications middleware via which information flows between SOCS and the Scheduler. Key to the design of SOCS is the ability to simulate a survey either deterministically or with stochastic variation in a variety of outputs. This is needed to understand the behavior of simulated surveys when the Scheduler is not provided completely accurate environmental data due to rapid variation in the environment, and also when the Scheduler's observatory model is not a completely accurate model of the real observatory.
+Figure~\ref*{fig:commflow} is an exact replica of a diagram showing the interaction of the Scheduler and the OCS with SOCS simulating OCS functions. The job of SOCS is to provide all of the needed inputs to the Scheduler shown in this diagram. Central to this is the communications middleware via which information flows between SOCS and the Scheduler. Key to the design of SOCS is the ability to simulate a survey either deterministically or with stochastic variation in a variety of inputs. This is needed to understand the behavior of simulated surveys when the Scheduler is not provided completely accurate environmental data due to rapid variation in the environment, and also when the Scheduler's observatory model is not a completely accurate model of the real observatory.
 
 \section{CONSTRUCTION}
 \label{sec:construction}
 
-Since SOCS and the Scheduler have interdependent functionality, the developed construction plans are tightly coupled. The schedules for both products are aligned so that software releases appear simultaneously. The first goal in the construction process is to create a version that replaces all of the functionality offered by OpSim3 with a few improvements added. The construction will proceed with adding more features to the system until the Scheduler is delivered to the project completing a major milestone. There will be continued development after the delivery to implement a more features of the system that have been requested. 
+Since SOCS and the Scheduler have interdependent functionality, the developed construction plans are tightly coupled. The schedules for both products are aligned so that software releases appear simultaneously. The first goal in the construction process is to create a version that replaces all of the functionality offered by OpSim3 with a few improvements added. The construction will proceed with adding more features to the system until the Scheduler is delivered to the project completing a major milestone. There will be continued development after the delivery to implement more features of the system that have been requested. 
 
-The following description provides the proposed release versions and the functionality required from that version. The version 1.0 release represents the OpSim3 replacement milestone and is slated for the fall of 2016. The version 1.5 release represents the milestone of the Scheduler delivery to the project.
+The following description provides the proposed release versions and the functionality required from each version. The version 1.0 release represents the OpSim3 replacement milestone and is slated for the fall of 2016. The version 1.5 release represents the milestone of the Scheduler delivery to the project.
 
 \begin{description}
 	\item[v0.2] SOCS interface with DDS, Implement basic configuration system, Implement basic survey database system, Simulation kernel and time handling, sequencer with target handling, Inherit from Scheduler observatory model, Interface with Scheduler exchanging fixed list of targets
@@ -127,7 +127,7 @@ The Environmental Model will contain classes that handle digesting and distribut
 
 \subsubsection{Quality Simulator}
 
-While this module has not reached the development stage of the construction plan, it also has a known set of functionality. It will contain classes that mimic some the information from the Data Management Level 1 products\cite{DPDD}. The main focus is the image feedback on things like seeing, transparency and other quality metrics. This system will be engineered to provide some mechanism for occasionally making "images" that do not meet the constraints of a good visit. This information will be fed back to the Scheduler and the winning proposals for that visit will need to determine how the quality factors effect their completeness requirements.
+While this module has not reached the development stage of the construction plan, it also has a known set of functionality. It will contain classes that mimic some the information from the Data Management Level 1 products\cite{DPDD}. The main focus is the image feedback on things like seeing, transparency and other quality metrics. This system will be engineered to provide a mechanism for occasionally making a recently completed visit violate image quality constraints. This information will be fed back to the Scheduler and the winning proposals for that visit will need to determine how the quality factors effect their completeness requirements.
 
 \subsubsection{SAL}
 
@@ -159,7 +159,7 @@ This arrow contains a single topic that is exchanged prior to the upcoming visit
 
 \subsubsection{Image Quality}
 
-This arrow contains a topic with image quality parameters from a past visit. It will contain an overall image quality factor and calculated seeing and transparency for the visit field.
+This arrow contains a topic with image quality parameters from a recent visit. It will contain an overall image quality factor and calculated seeing and transparency for the visit field.
 
 \subsubsection{History}
 
@@ -171,7 +171,7 @@ This arrow represents any configuration coming from the Scheduler that outside s
 
 \subsubsection{Targets}
 
-This represents the stream targets requested by the Scheduler after considering all of the environmental, observatory and science requirements. The target topic contains information like the requested field, field position (RA, Dec), filter, number and duration of exposures. 
+This represents the stream of targets requested by the Scheduler after considering all of the environmental, observatory and science requirements. The target topic contains information like the requested field, field position (RA, Dec), filter, number and duration of exposures. 
 
 \subsubsection{Sched Telem}
 
@@ -179,11 +179,11 @@ This arrow represents a topic containing all of the relevant information the Sch
 
 \section{SOFTWARE ENGINEERING}
 
-OpSim3 had a document detailing all of the functional and performance requirements for the developed system which included those for the Scheduler. The refactoring of OpSim3 into the SOCS and Scheduler components necessitated a refactoring of the requirements document into one for each resulting system. The SOCS requirements document was adjusted to account for the new role as the harness for driving the Scheduler and placed under LSST project level change control.
+OpSim3 had a document detailing all of the functional and performance requirements for the developed system which included those for the Scheduler. The refactoring of OpSim3 into the SOCS and Scheduler components necessitated a reorganization of the requirements document into one for each resulting system. The SOCS requirements document was adjusted to account for the new role as the harness for driving the Scheduler and placed under LSST project level change control.
 
 A development plan for SOCS was created containing incremental releases, with a specific set of capabilities and validation activities for each one. This plan is captured in JIRA\cite{JIRA} release epics and described at a high level in Primavera\cite{Primavera} PMCS\cite{PMCS}. The plan is coordinated with the release timeline of the Scheduler due to their heavy interdependence. The detailed construction plan is also described in JIRA epics relating to each release epic, keeping track of individual tasks that mark the way to each release. Tracking the development process uses the LSST variant of Agile software development\cite{Kantor_SPIE2016}. The JIRA plan, releases, milestones and tasks are used periodically to report back to PMCS, to compute Earned Value for the project and to organize the work of the development team.
 
-The SOCS code is written in Python\cite{Python} and is kept in a GitHub\cite{GitHub} git repository. It follows the coding standards from Data Management and Systems Engineering Simulations about templates, interfaces, coding and unit tests. The SOCS code follows the basic tenants of the Test Driven Design\cite{Beck2002}\cite{Astels2003} (TDD) philosophy of software development. TDD requires writing tests before implementing code, helping to focus the design of the system. Also, unit tests are run during the implementation process at a fairly high frequency to uncover issues quickly. The baseline science survey configuration is also kept within the SOCS GitHub repository. 
+The SOCS code is written in Python\cite{Python} and is kept in a GitHub\cite{GitHub} git repository. It follows the coding standards\cite{DMPythonStyle} from Data Management and Systems Engineering Simulations about templates, interfaces, coding and unit tests. The SOCS code follows the basic tenants of the Test Driven Design\cite{Beck2002}\cite{Astels2003} (TDD) philosophy of software development. TDD requires writing tests before implementing code, helping to focus the design of the system. Also, unit tests are run during the implementation process at a fairly high frequency to uncover issues quickly. The baseline science survey configuration is also kept within the SOCS GitHub repository. 
 
 More importantly, each SOCS release is integrated and tested with the LSST Scheduler and the combined efforts from both the Telescope and Site and Systems Engineering Simulations teams. The capabilities of SOCS to drive the Scheduler for implementing the LSST survey are validated with specialized tools, such as the Metrics Analysis Framework\cite{2014SPIE.9149E..0BJ} and the participation of the science collaborations.
 
