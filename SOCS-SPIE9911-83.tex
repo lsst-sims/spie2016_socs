@@ -3,6 +3,9 @@
 %\documentclass[nocompress]{spie}  %>>> to avoid compression of citations
 
 \renewcommand{\baselinestretch}{1.0} % Change to 1.65 for double spacing
+\newcommand{\procspie}{Proc.\ SPIE}
+\newcommand{\aspconf}{ASP Conf.\ Ser.}
+\newcommand{\arxiv}[1]{\href{http://arxiv.org/abs/#1}{arXiv:#1}}
  
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage{graphicx}
@@ -29,7 +32,7 @@
 \maketitle
 
 \begin{abstract}
-The Operations Simulator was used to prototype the LSST Scheduler. Currently, the Scheduler is being developed separately to interface with the LSST Observatory Control System (OCS). A new Simulator is under concurrent development to adjust to this new architecture. This requires a package simulating enough of the OCS to allow execution of realistic schedules. This new package is called the Simulated OCS (SOCS). In this paper we will detail the SOCS construction plan, package structure, LSST communication middleware platform use, provide some interesting use cases that the separated architecture allows and the software engineering practices used in development.
+The Operations Simulator was used to prototype the Large Synoptic Survey Telescope (LSST) Scheduler. Currently, the Scheduler is being developed separately to interface with the LSST Observatory Control System (OCS). A new Simulator is under concurrent development to adjust to this new architecture. This requires a package simulating enough of the OCS to allow execution of realistic schedules. This new package is called the Simulated OCS (SOCS). In this paper we will detail the SOCS construction plan, package structure, LSST communication middleware platform use, provide some interesting use cases that the separated architecture allows and the software engineering practices used in development.
 \end{abstract}
 
 % Include a list of keywords after the abstract 
@@ -38,7 +41,7 @@ The Operations Simulator was used to prototype the LSST Scheduler. Currently, th
 \section{INTRODUCTION}
 \label{sec:intro}  % \label{} allows reference to this section
 
-Both the research and development phase of the LSST project prior to the construction award in August 2014 and the subsequent years afterwards saw the successful development and testing of the Operations Simulator (OpSim) \cite{2014SPIE.9149E..0GD}\cite{2014SPIE.9150E..15D}\cite{2013AAS...22124703S}\cite{2010SPIE.7737E..0ZR}\cite{2010AAS...21540105K}\cite{2009AAS...21346004C}\cite{2007AAS...21113703P}\cite{2006SPIE.6270E..1DD}\cite{2006AAS...209.8604P}\cite{2005AAS...207.2626C}\cite{2004AAS...20510809C} . OpSim is a software application for simulating surveys for LSST. It contains an environment simulation using data from the actual LSST site, a fully detailed kinematic telescope and camera model, configuration parameters for controlling the science driven requirements, and the prototype version of the LSST Scheduler. OpSim has been tuned to produce the current LSST baseline survey and some alternate survey strategies\cite{Cook_SPIE2016}. 
+Both the research and development phase of the Large Synoptic Survey Telescope (LSST)\cite{Kahn_SPIE2016} project prior to the construction award in August 2014 and the subsequent years afterwards saw the successful development and testing of the Operations Simulator (OpSim) \cite{2014SPIE.9149E..0GD,2014SPIE.9150E..15D,2013AAS...22124703S,2010SPIE.7737E..0ZR,2010AAS...21540105K,2009AAS...21346004C,2007AAS...21113703P,2006SPIE.6270E..1DD,2006AAS...209.8604P,2005AAS...207.2626C,2004AAS...20510809C}. OpSim is a software application for simulating surveys for LSST. It contains an environment simulation using data from the actual LSST site, a fully detailed kinematic telescope and camera model, configuration parameters for controlling the science driven requirements, and the prototype version of the LSST Scheduler. OpSim has been tuned to produce the current LSST baseline survey and some alternate survey strategies\cite{Cook_SPIE2016}. 
 
 While OpSim has been successful at producing survey strategy scenarios, the Scheduler is entwined within the code base. When LSST begins operations, it will require the Scheduler to perform the duties of determining the next targets to observe while interfacing with LSST's Observatory Control System (OCS)\cite{Daly_SPIE2016}. The Scheduler will use the LSST communication middleware\cite{Mills_SPIE2016} project which is a layer upon the Data Distribution Service (DDS) architecture. DDS is a publish/subscribe system in common use for communication between components of complex systems. 
 
@@ -47,8 +50,8 @@ With the requirements stated above, the project decided to separate the Schedule
 \begin{figure} [ht]
   	\begin{center}
   		\begin{tabular}{c} 
-  			\includegraphics[height=4cm]{Opsimv3.png}
-  			\includegraphics[height=4cm]{Opsimv4.png}
+  			\includegraphics[height=5cm]{Opsimv3.png}
+  			\includegraphics[height=5cm]{Opsimv4.png}
   		\end{tabular}
   	\end{center}
   	\caption[What is this?] 
@@ -59,7 +62,7 @@ With the requirements stated above, the project decided to separate the Schedule
 \begin{figure} [ht]
 	\begin{center}
 		\begin{tabular}{c}
-			\includegraphics[height=5cm]{CommFlow.png}
+			\includegraphics[height=8cm]{CommFlow.png}
 		\end{tabular}
 	\end{center}
 	\caption[example]
@@ -97,7 +100,7 @@ The design of SOCS inherits from lessons learned in building OpSim3. Among those
 \begin{figure} [ht]
 \begin{center}
 \begin{tabular}{c}
-\includegraphics[height=5cm]{CompArch.png}
+\includegraphics[height=10cm]{CompArch.png}
 \end{tabular}
 \end{center}
 \caption[example]
@@ -115,11 +118,11 @@ The Simulation Kernel is responsible for the main control flow of the simulator.
 
 \subsubsection{Observatory Model}
 
-The Observatory Model contains the representation of the "real" LSST observatory. It uses as an aggregate of the Observatory Model from the Scheduler. The Scheduler's model will always be an ideal version of the real observatory. However, the SOCS Observatory Model is constructed for allowing perturbations of the various model parameters. This allows for testing of engineering scenarios of degraded observatory performance. This module also houses container classes used for gathering information about the observatory for inclusion in the survey database. 
+The Observatory Model contains the representation of the ``real'' LSST observatory. It uses as an aggregate of the Observatory Model from the Scheduler. The Scheduler's model will always be an ideal version of the real observatory. However, the SOCS Observatory Model is constructed for allowing perturbations of the various model parameters. This allows for testing of engineering scenarios of degraded observatory performance. This module also houses container classes used for gathering information about the observatory for inclusion in the survey database. 
 
 \subsubsection{Survey Database}
 
-This module handles the creation and interactions for the generated survey database. It contains functions that specify the information content of the different tables and then constructs the actual instances of those tables. There are functions that also aid in the ability to map data from DDS topics and other SOCS information structures onto the appropriate columns for a given table. The SocsDB class is the main orchestrator of survey database interactions. It is responsible for creating the database, gathering the data for output and actually performing the database writes. The system is designed to output either a MySQL or a SQLite database.
+This module handles the creation and interactions for the generated survey database. It contains functions that specify the information content of the different tables and then constructs the actual instances of those tables. There are functions that also aid in the ability to map data from DDS topics and other SOCS information structures onto the appropriate columns for a given table. The SocsDB class is the main orchestrator of survey database interactions. It is responsible for creating the database, gathering the data for output and actually performing the database writes. The system uses SQLAlchemy\cite{SQLAlchemy} to handle the different database backends and can output either a MariaDB\cite{MariaDB} or a SQLite\cite{SQLite} database.
 
 \subsubsection{Environmental Model}
 
@@ -135,7 +138,7 @@ While this module is not on the diagram, it is designed to help handle the inter
 
 \subsubsection{Configuration}
 
-This is another module not on the diagram, but one that keeps the baseline LSST survey configuration. It uses a configuration system that is available from the LSST Data Management software stack\cite{2015arXiv151207914J}. The classes contain the appropriate configuration parameters for the baseline survey and the configuration system provides a mechanism to override those values without changing the code. There are also classes which interface the configuration parameters to the configuration DDS topics that need to be passed to the Scheduler.
+This is another module not on the diagram, but one that keeps the baseline LSST survey configuration. It uses a configuration system that is available from the LSST Data Management software stack\cite{2016_adassxxv_O3-1}. The classes contain the appropriate configuration parameters for the baseline survey and the configuration system provides a mechanism to override those values without changing the code. There are also classes which interface the configuration parameters to the configuration DDS topics that need to be passed to the Scheduler.
 
 \subsection{Information Flow}
 
@@ -181,9 +184,9 @@ This arrow represents a topic containing all of the relevant information the Sch
 
 OpSim3 had a document detailing all of the functional and performance requirements for the developed system which included those for the Scheduler. The refactoring of OpSim3 into the SOCS and Scheduler components necessitated a reorganization of the requirements document into one for each resulting system. The SOCS requirements document was adjusted to account for the new role as the harness for driving the Scheduler and placed under LSST project level change control.
 
-A development plan for SOCS was created containing incremental releases, with a specific set of capabilities and validation activities for each one. This plan is captured in JIRA\cite{JIRA} release epics and described at a high level in Primavera\cite{Primavera} PMCS\cite{PMCS}. The plan is coordinated with the release timeline of the Scheduler due to their heavy interdependence. The detailed construction plan is also described in JIRA epics relating to each release epic, keeping track of individual tasks that mark the way to each release. Tracking the development process uses the LSST variant of Agile software development\cite{Kantor_SPIE2016}. The JIRA plan, releases, milestones and tasks are used periodically to report back to PMCS, to compute Earned Value for the project and to organize the work of the development team.
+A development plan for SOCS was created containing incremental releases, with a specific set of capabilities and validation activities for each one. This plan is captured in JIRA\cite{JIRA} release epics and described at a high level in Primavera\cite{Primavera} Project Management Control System (PMCS)\cite{PMCS}. The plan is coordinated with the release timeline of the Scheduler due to their heavy interdependence. The detailed construction plan is also described in JIRA epics relating to each release epic, keeping track of individual tasks that mark the way to each release. Tracking the development process uses the LSST variant of Agile software development\cite{Kantor_SPIE2016}. The JIRA plan, releases, milestones and tasks are used periodically to report back to PMCS, to compute Earned Value\cite{Kantor_SPIE2016} for the project and to organize the work of the development team.
 
-The SOCS code is written in Python\cite{Python} and is kept in a GitHub\cite{GitHub} git repository. It follows the coding standards\cite{DMPythonStyle} from LSST Data Management and LSST Systems Engineering Simulations about templates, interfaces, coding and unit tests. The SOCS code follows the basic tenants of the Test Driven Design\cite{Beck2002}\cite{Astels2003} (TDD) philosophy of software development. TDD requires writing tests before implementing code, helping to focus the design of the system. Also, unit tests are run during the implementation process at a fairly high frequency to uncover issues quickly. The baseline science survey configuration is also kept within the SOCS GitHub repository. 
+The SOCS code is written in Python\cite{Python} and is kept in a GitHub\cite{GitHub} git repository. It follows the coding standards\cite{DMPythonStyle} from LSST Data Management and LSST Systems Engineering Simulations about templates, interfaces, coding and unit tests. The SOCS code follows the basic tenants of the Test Driven Design\cite{Beck2002,Astels2003} (TDD) philosophy of software development. TDD requires writing tests before implementing code, helping to focus the design of the system. Also, unit tests are run during the implementation process at a fairly high frequency to uncover issues quickly. The baseline science survey configuration is also kept within the SOCS GitHub repository.
 
 More importantly, each SOCS release is integrated and tested with the LSST Scheduler and the combined efforts from both the Telescope and Site and Systems Engineering Simulations teams. The capabilities of SOCS to drive the Scheduler for implementing the LSST survey are validated with specialized tools, such as the Metrics Analysis Framework\cite{2014SPIE.9149E..0BJ} and the participation of the science collaborations.
 
