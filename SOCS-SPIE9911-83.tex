@@ -122,7 +122,7 @@ The Observatory Model contains the representation of the ``real'' LSST observato
 
 \subsubsection{Survey Database}
 
-This module handles the creation and interactions for the generated survey database. It contains functions that specify the information content of the different tables and then constructs the actual instances of those tables. There are functions that also aid in the ability to map data from DDS topics and other SOCS information structures onto the appropriate columns for a given table. The SocsDB class is the main orchestrator of survey database interactions. It is responsible for creating the database, gathering the data for output and actually performing the database writes. The system uses SQLAlchemy\cite{SQLAlchemy} to handle the different database backends and can output either a MariaDB\cite{MariaDB} or a SQLite\cite{SQLite} database.
+This module handles the creation and interactions for the generated survey database. It contains functions that specify the information content of the different tables and then constructs the actual instances of those tables. There are functions that also aid in the ability to map data from DDS topics and other SOCS information structures onto the appropriate columns for a given table. The SocsDB class is the main orchestrator of survey database interactions. It is responsible for creating the database, gathering the data for output and actually performing the database writes. The system uses SQLAlchemy\cite{SQLAlchemy} to handle the different database backends and is currently configured to output to a MariaDB\cite{MariaDB} or a SQLite\cite{SQLite} database.
 
 \subsubsection{Environmental Model}
 
